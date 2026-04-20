@@ -27,10 +27,6 @@
       margin-bottom: 20px;
     }
 
-    .search-box {
-      margin-bottom: 20px;
-    }
-
     input {
       width: 100%;
       padding: 12px;
@@ -56,6 +52,7 @@
       border-radius: 6px;
       margin: 5px;
       font-size: 14px;
+      cursor: pointer;
     }
 
     .card {
@@ -88,59 +85,82 @@
 <div class="container">
 
   <h1>WAI Help Center</h1>
-
   <div class="sub">What can we help you with today?</div>
 
   <!-- SEARCH -->
-  <div class="search-box">
-    <form onsubmit="goSearch(event)">
-      <input id="q" placeholder="Ask a question like: How do I renew my membership or find a chapter">
-      <button>Search</button>
-    </form>
-  </div>
+  <form onsubmit="runSearch(event)">
+    <input id="searchInput" placeholder="Ask a question like: How do I renew my membership">
+    <button type="submit">Search</button>
+  </form>
 
-  <!-- SUGGESTIONS -->
+  <!-- QUICK BUTTONS -->
   <div class="chips">
-    <span>Renew membership</span>
-    <span>Scholarships</span>
-    <span>Conference</span>
-    <span>Find a chapter</span>
-    <span>Login help</span>
+    <span onclick="quickSearch('renew membership')">Renew membership</span>
+    <span onclick="quickSearch('scholarships')">Scholarships</span>
+    <span onclick="quickSearch('conference')">Conference</span>
+    <span onclick="quickSearch('find a chapter')">Find a chapter</span>
+    <span onclick="quickSearch('login help')">Login help</span>
   </div>
 
-  <!-- RESULT -->
+  <!-- RESULTS -->
   <div id="result"></div>
 
 </div>
 
 <script>
-function goSearch(e){
+
+// MAIN SEARCH
+function runSearch(e){
   e.preventDefault();
-  var query = document.getElementById("q").value;
-  window.location.href = "?q=" + encodeURIComponent(query);
+  const q = document.getElementById("searchInput").value;
+  loadResults(q);
 }
 
-const params = new URLSearchParams(window.location.search);
-const q = params.get("q");
+// QUICK BUTTON SEARCH
+function quickSearch(text){
+  document.getElementById("searchInput").value = text;
+  loadResults(text);
+}
 
-if(q){
+// LOAD RESULTS
+function loadResults(q){
 
   let content = "<p><strong>You asked:</strong> " + q + "</p>";
 
-  if(q.toLowerCase().includes("password") || q.toLowerCase().includes("login")){
+  const query = q.toLowerCase();
+
+  if(query.includes("password") || query.includes("login")){
     content += `
       <div class="card">
-        <strong>Account access:</strong><br><br>
+        <strong>Account access</strong><br><br>
         <a href="https://www.wai.org/member-compass">Login or Reset Password</a>
       </div>
     `;
   }
 
-  else if(q.toLowerCase().includes("member")){
+  else if(query.includes("member")){
     content += `
       <div class="card">
-        <strong>Membership help:</strong><br><br>
+        <strong>Membership help</strong><br><br>
         <a href="https://www.wai.org/membership-information">Join or manage membership</a>
+      </div>
+    `;
+  }
+
+  else if(query.includes("scholar")){
+    content += `
+      <div class="card">
+        <strong>Scholarships</strong><br><br>
+        <a href="https://www.wai.org/scholarships">Browse scholarships</a>
+      </div>
+    `;
+  }
+
+  else if(query.includes("conference") || query.includes("event")){
+    content += `
+      <div class="card">
+        <strong>Conference and events</strong><br><br>
+        <a href="https://www.wai.org/conference">Conference details</a>
       </div>
     `;
   }
@@ -148,7 +168,7 @@ if(q){
   else {
     content += `
       <div class="card">
-        <strong>Helpful links:</strong><br><br>
+        <strong>Helpful links</strong><br><br>
         <a href="https://www.wai.org/membership-information">Membership</a><br><br>
         <a href="https://www.wai.org/scholarships">Scholarships</a>
       </div>
@@ -162,6 +182,16 @@ if(q){
 
   document.getElementById("result").innerHTML = content;
 }
+
+// LOAD QUERY FROM URL (IMPORTANT FOR NOVI CONNECTION)
+const params = new URLSearchParams(window.location.search);
+const urlQuery = params.get("q");
+
+if(urlQuery){
+  document.getElementById("searchInput").value = urlQuery;
+  loadResults(urlQuery);
+}
+
 </script>
 
 </body>
