@@ -109,27 +109,41 @@
 
 <script>
 
-// MAIN SEARCH
+// 🔍 SEARCH HANDLER
 function runSearch(e){
   e.preventDefault();
   const q = document.getElementById("searchInput").value;
-  loadResults(q);
+  if(!q) return;
+
+  // reload page with query
+  window.location.href = "?q=" + encodeURIComponent(q);
 }
 
-// QUICK BUTTON SEARCH
+// ⚡ QUICK BUTTONS
 function quickSearch(text){
-  document.getElementById("searchInput").value = text;
-  loadResults(text);
+  window.location.href = "?q=" + encodeURIComponent(text);
 }
 
-// LOAD RESULTS
+// 🧠 LOAD RESULTS
 function loadResults(q){
 
   let content = "<p><strong>You asked:</strong> " + q + "</p>";
 
   const query = q.toLowerCase();
 
-  if(query.includes("password") || query.includes("login")){
+  // ✅ CHAPTER (FIRST!)
+  if(query.includes("chapter") || query.includes("find a chapter") || query.includes("near me") || query.includes("location")){
+    content += `
+      <div class="card">
+        <strong>Find a chapter</strong><br><br>
+        <a href="https://www.wai.org/chapters">Browse all chapters</a><br><br>
+        <span class="small">Tip: Search by state or region.</span>
+      </div>
+    `;
+  }
+
+  // LOGIN
+  else if(query.includes("password") || query.includes("login")){
     content += `
       <div class="card">
         <strong>Account access</strong><br><br>
@@ -138,7 +152,8 @@ function loadResults(q){
     `;
   }
 
-  else if(query.includes("member")){
+  // MEMBERSHIP
+  else if(query.includes("member") || query.includes("join") || query.includes("renew")){
     content += `
       <div class="card">
         <strong>Membership help</strong><br><br>
@@ -147,6 +162,7 @@ function loadResults(q){
     `;
   }
 
+  // SCHOLARSHIPS
   else if(query.includes("scholar")){
     content += `
       <div class="card">
@@ -156,6 +172,7 @@ function loadResults(q){
     `;
   }
 
+  // EVENTS
   else if(query.includes("conference") || query.includes("event")){
     content += `
       <div class="card">
@@ -165,6 +182,7 @@ function loadResults(q){
     `;
   }
 
+  // DEFAULT
   else {
     content += `
       <div class="card">
@@ -175,15 +193,18 @@ function loadResults(q){
     `;
   }
 
+  // 🔗 GOOGLE BUTTON (backup)
   content += `
-    <p class="small">Opening more results in a new tab...</p>
-    <a class="btn" href="https://www.google.com/search?q=site:wai.org+${encodeURIComponent(q)}" target="_blank">Open results</a>
+    <p class="small">Need more results?</p>
+    <a class="btn" href="https://www.google.com/search?q=site:wai.org+${encodeURIComponent(q)}" target="_blank">
+      Open more results
+    </a>
   `;
 
   document.getElementById("result").innerHTML = content;
 }
 
-// LOAD QUERY FROM URL (IMPORTANT FOR NOVI CONNECTION)
+// 🔄 LOAD FROM URL (IMPORTANT FOR NOVI)
 const params = new URLSearchParams(window.location.search);
 const urlQuery = params.get("q");
 
