@@ -1,0 +1,43 @@
+.gs-title,
+    .gs-title * {
+      color: #2a6ebb !important;
+      font-weight: 500 !important;
+      text-decoration: none !important;
+    }
+
+    .gs-title:hover {
+      text-decoration: underline !important;
+    }
+
+    .gs-snippet {
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>More Results</h2>
+
+<!-- Google CSE -->
+<script async src="https://cse.google.com/cse.js?cx=67d447cec0e244bd1"></script>
+<div class="gcse-searchresults-only"></div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const q = params.get("q");
+
+window.onload = function () {
+  if (q) {
+    google.search.cse.element.render({
+      div: document.querySelector(".gcse-searchresults-only"),
+      tag: 'searchresults-only',
+      attributes: { q: q }
+    });
+  }
+};
+</script>
+
+</body>
+</html>
