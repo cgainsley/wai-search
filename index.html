@@ -1,187 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>WAI Help Center Search</title>
+<!-- SEARCH -->
+<div style="margin: 24px auto; max-width: 600px;">
+  <p><strong>Ask a question</strong></p>
 
-  <style>
-    body {
-      font-family: Calibri, Arial, sans-serif;
-      background: #f5f7fc;
-      color: #051c40;
-      margin: 0;
-    }
+  <form onsubmit="goSearch(event)">
+    <input 
+      type="text" 
+      id="helpSearch" 
+      placeholder="Ask something like: How do I renew my membership?" 
+      style="width: 100%; padding: 12px; font-size: 15px; border: 1px solid #ccc; border-radius: 6px;">
+  </form>
 
-    .container {
-      max-width: 800px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
-
-    .logo {
-      margin-bottom: 10px;
-    }
-
-    h1 {
-      font-size: 36px;
-      margin: 10px 0 20px;
-    }
-
-    .back {
-      font-size: 14px;
-      margin-bottom: 15px;
-      display: inline-block;
-      cursor: pointer;
-    }
-
-    .card {
-      border: 1px solid #eee;
-      padding: 15px;
-      border-radius: 6px;
-      background: #f9fafc;
-      margin-bottom: 20px;
-    }
-
-    a {
-      color: #051c40;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .small {
-      font-size: 13px;
-      color: #666;
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="container">
-
-  <!-- LOGO -->
-  <div class="logo">
-    <img src="https://www.wai.org/sites/default/files/WAI_logo.png" style="height:50px;">
-  </div>
-
-  <!-- BACK -->
-  <div class="back" onclick="goBack()">← Back to Help Center</div>
-
-  <!-- TITLE -->
-  <h1>WAI Help Center</h1>
-
-  <!-- QUERY -->
-  <div id="query"></div>
-
-  <!-- SMART RESULT -->
-  <div id="smart"></div>
-
-  <!-- GOOGLE BUTTON -->
-  <div id="google"></div>
-
+  <p style="font-size: 12px; color: #666; margin-top: 6px;">
+    Results will open in a new tab.
+  </p>
 </div>
 
 <script>
+function goSearch(e) {
+  e.preventDefault();
 
-function goBack() {
-  window.location.href = "https://www.wai.org/help-center";
-}
+  var query = document.getElementById("helpSearch").value;
 
-// GET QUERY
-const params = new URLSearchParams(window.location.search);
-const q = (params.get("q") || "").toLowerCase();
-
-if (q) {
-
-  // SHOW QUERY
-  document.getElementById("query").innerHTML =
-    "<p><strong>You asked:</strong> " + q + "</p>";
-
-  let answer = "";
-
-  // MEMBERSHIP
-  if (q.includes("member") || q.includes("join") || q.includes("renew")) {
-    answer = `
-      <div class='card'>
-        <strong>Membership help:</strong><br><br>
-        <a href='https://www.wai.org/membership-information'>Join or Manage Membership</a><br><br>
-        <a href='https://www.wai.org/member-compass'>Login or Reset Password</a>
-      </div>
-    `;
-  }
-
-  // LOGIN
-  else if (q.includes("login") || q.includes("password")) {
-    answer = `
-      <div class='card'>
-        <strong>Account access:</strong><br><br>
-        <a href='https://www.wai.org/member-compass'>Login or Reset Password</a>
-      </div>
-    `;
-  }
-
-  // SCHOLARSHIPS
-  else if (q.includes("scholar") || q.includes("grant") || q.includes("funding")) {
-    answer = `
-      <div class='card'>
-        <strong>Scholarships and funding:</strong><br><br>
-        <a href='https://www.wai.org/scholarships'>Browse Scholarships</a><br><br>
-        <span class='small'>Tip: Check deadlines early.</span>
-      </div>
-    `;
-  }
-
-  // CONFERENCE
-  else if (q.includes("conference") || q.includes("event")) {
-    answer = `
-      <div class='card'>
-        <strong>Conference and events:</strong><br><br>
-        <a href='https://www.wai.org/conference'>Conference Details</a><br><br>
-        <a href='https://www.wai.org/events/'>All Events</a>
-      </div>
-    `;
-  }
-
-  // CHAPTERS
-  else if (q.includes("chapter") || q.includes("florida") || q.includes("texas")) {
-    answer = `
-      <div class='card'>
-        <strong>Find a chapter:</strong><br><br>
-        <a href='https://www.wai.org/chapters'>Browse Chapters</a>
-      </div>
-    `;
-  }
-
-  // DEFAULT
-  else {
-    answer = `
-      <div class='card'>
-        <strong>Helpful links:</strong><br><br>
-        <a href='https://www.wai.org/membership-information'>Membership</a><br><br>
-        <a href='https://www.wai.org/scholarships'>Scholarships</a><br><br>
-        <a href='https://www.wai.org/conference'>Conference</a>
-      </div>
-    `;
-  }
-
-  document.getElementById("smart").innerHTML = answer;
-
-  // 🔥 OPEN GOOGLE IMMEDIATELY
+  // WINDOW 1 → Curated results page
   window.open(
-    "https://www.google.com/search?q=site:wai.org+" + encodeURIComponent(q),
+    "https://wai-search-gamma.vercel.app/?q=" + encodeURIComponent(query),
     "_blank"
   );
 
-  // FALLBACK BUTTON
-  document.getElementById("google").innerHTML =
-    "<p class='small'>Opening more results in a new tab...</p>" +
-    "<a href='https://www.google.com/search?q=site:wai.org+" + encodeURIComponent(q) + "' target='_blank' style='display:inline-block;margin-top:10px;padding:10px 16px;background:#108687;color:#fff;border-radius:6px;'>Open results</a>";
-
+  // WINDOW 2 → Styled Google results (your custom page)
+  window.open(
+    "https://wai-search-gamma.vercel.app/google.html?q=" + encodeURIComponent(query),
+    "googleWindow",
+    "width=900,height=700,left=200,top=100,resizable=yes,scrollbars=yes"
+  );
 }
-
 </script>
-
-</body>
-</html>
