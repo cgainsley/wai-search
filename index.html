@@ -12,7 +12,7 @@
     }
 
     .container {
-      max-width: 800px;
+      max-width: 820px;
       margin: 40px auto;
       padding: 0 20px;
     }
@@ -20,6 +20,42 @@
     h1 {
       font-size: 36px;
       margin-bottom: 10px;
+    }
+
+    .sub {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 18px;
+      background: #051c40;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .chips span {
+      display: inline-block;
+      background: #eef1f6;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 5px;
+      font-size: 14px;
     }
 
     .card {
@@ -30,23 +66,19 @@
       margin-top: 20px;
     }
 
-    a {
-      color: #2a6ebb;
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 16px;
+      background: #108687;
+      color: #fff;
+      border-radius: 6px;
       text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .back {
-      font-size: 14px;
-      margin-bottom: 20px;
-      cursor: pointer;
-    }
-
-    .logo {
-      margin-bottom: 10px;
+    .small {
+      font-size: 13px;
+      color: #666;
     }
   </style>
 </head>
@@ -55,15 +87,26 @@
 
 <div class="container">
 
-  <!-- LOGO -->
-  <div class="logo">
-    <img src="https://www.wai.org/sites/default/files/WAI_logo.png" style="height:50px;">
+  <h1>WAI Help Center</h1>
+
+  <div class="sub">What can we help you with today?</div>
+
+  <!-- SEARCH -->
+  <div class="search-box">
+    <form onsubmit="goSearch(event)">
+      <input id="q" placeholder="Ask a question like: How do I renew my membership or find a chapter">
+      <button>Search</button>
+    </form>
   </div>
 
-  <!-- BACK -->
-  <div class="back" onclick="goBack()">← Back to Help Center</div>
-
-  <h1>WAI Help Center</h1>
+  <!-- SUGGESTIONS -->
+  <div class="chips">
+    <span>Renew membership</span>
+    <span>Scholarships</span>
+    <span>Conference</span>
+    <span>Find a chapter</span>
+    <span>Login help</span>
+  </div>
 
   <!-- RESULT -->
   <div id="result"></div>
@@ -71,70 +114,54 @@
 </div>
 
 <script>
-function goBack() {
-  window.location.href = "https://www.wai.org/help-center";
+function goSearch(e){
+  e.preventDefault();
+  var query = document.getElementById("q").value;
+  window.location.href = "?q=" + encodeURIComponent(query);
 }
 
 const params = new URLSearchParams(window.location.search);
-const q = (params.get("q") || "").toLowerCase();
+const q = params.get("q");
 
-let content = "";
+if(q){
 
-// MEMBERSHIP
-if (q.includes("member") || q.includes("join") || q.includes("renew")) {
-  content = `
-    <div class="card">
-      <strong>Membership help</strong><br><br>
-      <a href="https://www.wai.org/membership-information">Join or manage membership</a><br><br>
-      <a href="https://www.wai.org/member-compass">Login or reset password</a>
-    </div>
+  let content = "<p><strong>You asked:</strong> " + q + "</p>";
+
+  if(q.toLowerCase().includes("password") || q.toLowerCase().includes("login")){
+    content += `
+      <div class="card">
+        <strong>Account access:</strong><br><br>
+        <a href="https://www.wai.org/member-compass">Login or Reset Password</a>
+      </div>
+    `;
+  }
+
+  else if(q.toLowerCase().includes("member")){
+    content += `
+      <div class="card">
+        <strong>Membership help:</strong><br><br>
+        <a href="https://www.wai.org/membership-information">Join or manage membership</a>
+      </div>
+    `;
+  }
+
+  else {
+    content += `
+      <div class="card">
+        <strong>Helpful links:</strong><br><br>
+        <a href="https://www.wai.org/membership-information">Membership</a><br><br>
+        <a href="https://www.wai.org/scholarships">Scholarships</a>
+      </div>
+    `;
+  }
+
+  content += `
+    <p class="small">Opening more results in a new tab...</p>
+    <a class="btn" href="https://www.google.com/search?q=site:wai.org+${encodeURIComponent(q)}" target="_blank">Open results</a>
   `;
-}
 
-// LOGIN
-else if (q.includes("login") || q.includes("password")) {
-  content = `
-    <div class="card">
-      <strong>Account access</strong><br><br>
-      <a href="https://www.wai.org/member-compass">Login or reset password</a>
-    </div>
-  `;
+  document.getElementById("result").innerHTML = content;
 }
-
-// SCHOLARSHIPS
-else if (q.includes("scholar") || q.includes("grant")) {
-  content = `
-    <div class="card">
-      <strong>Scholarships</strong><br><br>
-      <a href="https://www.wai.org/scholarships">Browse scholarships</a>
-    </div>
-  `;
-}
-
-// EVENTS
-else if (q.includes("conference") || q.includes("event")) {
-  content = `
-    <div class="card">
-      <strong>Conference and events</strong><br><br>
-      <a href="https://www.wai.org/conference">Conference details</a><br><br>
-      <a href="https://www.wai.org/events/">All events</a>
-    </div>
-  `;
-}
-
-// DEFAULT
-else {
-  content = `
-    <div class="card">
-      <strong>Helpful links</strong><br><br>
-      <a href="https://www.wai.org/membership-information">Membership</a><br><br>
-      <a href="https://www.wai.org/scholarships">Scholarships</a><br><br>
-      <a href="https://www.wai.org/conference">Conference</a>
-    </div>
-  `;
-}
-
-document.getElementById("result").innerHTML = content;
 </script>
 
 </body>
