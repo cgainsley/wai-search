@@ -1,37 +1,141 @@
-<!-- SEARCH -->
-<div style="margin: 24px auto; max-width: 600px;">
-  <p><strong>Ask a question</strong></p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WAI Help Center</title>
 
-  <form onsubmit="goSearch(event)">
-    <input 
-      type="text" 
-      id="helpSearch" 
-      placeholder="Ask something like: How do I renew my membership?" 
-      style="width: 100%; padding: 12px; font-size: 15px; border: 1px solid #ccc; border-radius: 6px;">
-  </form>
+  <style>
+    body {
+      font-family: Calibri, Arial, sans-serif;
+      background: #f5f7fc;
+      color: #051c40;
+      margin: 0;
+    }
 
-  <p style="font-size: 12px; color: #666; margin-top: 6px;">
-    Results will open in a new tab.
-  </p>
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e3e6ed;
+      border-radius: 6px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    a {
+      color: #2a6ebb;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .back {
+      font-size: 14px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .logo {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LOGO -->
+  <div class="logo">
+    <img src="https://www.wai.org/sites/default/files/WAI_logo.png" style="height:50px;">
+  </div>
+
+  <!-- BACK -->
+  <div class="back" onclick="goBack()">← Back to Help Center</div>
+
+  <h1>WAI Help Center</h1>
+
+  <!-- RESULT -->
+  <div id="result"></div>
+
 </div>
 
 <script>
-function goSearch(e) {
-  e.preventDefault();
-
-  var query = document.getElementById("helpSearch").value;
-
-  // WINDOW 1 → Curated results page
-  window.open(
-    "https://wai-search-gamma.vercel.app/?q=" + encodeURIComponent(query),
-    "_blank"
-  );
-
-  // WINDOW 2 → Styled Google results (your custom page)
-  window.open(
-    "https://wai-search-gamma.vercel.app/google.html?q=" + encodeURIComponent(query),
-    "googleWindow",
-    "width=900,height=700,left=200,top=100,resizable=yes,scrollbars=yes"
-  );
+function goBack() {
+  window.location.href = "https://www.wai.org/help-center";
 }
+
+const params = new URLSearchParams(window.location.search);
+const q = (params.get("q") || "").toLowerCase();
+
+let content = "";
+
+// MEMBERSHIP
+if (q.includes("member") || q.includes("join") || q.includes("renew")) {
+  content = `
+    <div class="card">
+      <strong>Membership help</strong><br><br>
+      <a href="https://www.wai.org/membership-information">Join or manage membership</a><br><br>
+      <a href="https://www.wai.org/member-compass">Login or reset password</a>
+    </div>
+  `;
+}
+
+// LOGIN
+else if (q.includes("login") || q.includes("password")) {
+  content = `
+    <div class="card">
+      <strong>Account access</strong><br><br>
+      <a href="https://www.wai.org/member-compass">Login or reset password</a>
+    </div>
+  `;
+}
+
+// SCHOLARSHIPS
+else if (q.includes("scholar") || q.includes("grant")) {
+  content = `
+    <div class="card">
+      <strong>Scholarships</strong><br><br>
+      <a href="https://www.wai.org/scholarships">Browse scholarships</a>
+    </div>
+  `;
+}
+
+// EVENTS
+else if (q.includes("conference") || q.includes("event")) {
+  content = `
+    <div class="card">
+      <strong>Conference and events</strong><br><br>
+      <a href="https://www.wai.org/conference">Conference details</a><br><br>
+      <a href="https://www.wai.org/events/">All events</a>
+    </div>
+  `;
+}
+
+// DEFAULT
+else {
+  content = `
+    <div class="card">
+      <strong>Helpful links</strong><br><br>
+      <a href="https://www.wai.org/membership-information">Membership</a><br><br>
+      <a href="https://www.wai.org/scholarships">Scholarships</a><br><br>
+      <a href="https://www.wai.org/conference">Conference</a>
+    </div>
+  `;
+}
+
+document.getElementById("result").innerHTML = content;
 </script>
+
+</body>
+</html>
