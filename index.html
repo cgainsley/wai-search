@@ -137,120 +137,71 @@ function quickSearch(text){
   window.location.href = "?q=" + encodeURIComponent(text);
 }
 
-// RESULTS ENGINE
+// BUILD GOOGLE-STYLE RESULTS
+function buildTopResults(q){
+
+  const query = q.toLowerCase();
+  let results = [];
+
+  if(query.includes("member")){
+    results = [
+      ["Membership Information","https://www.wai.org/membership-information","Join, renew, or manage your membership."],
+      ["Member Compass","https://www.wai.org/member-compass","Access your account or reset your password."],
+      ["Member Benefits","https://www.wai.org/membership-information","Explore all membership benefits."]
+    ];
+  }
+
+  else if(query.includes("scholar")){
+    results = [
+      ["WAI Scholarships","https://www.wai.org/scholarships","Browse and apply for scholarships."],
+      ["Scholarship FAQ","https://www.wai.org/scholarships","Learn how to apply and eligibility."]
+    ];
+  }
+
+  else if(query.includes("conference") || query.includes("event")){
+    results = [
+      ["Annual Conference","https://www.wai.org/conference","Details and registration."],
+      ["Events Calendar","https://www.wai.org/events","Explore upcoming events."]
+    ];
+  }
+
+  else if(query.includes("chapter")){
+    results = [
+      ["Find a Chapter","https://www.wai.org/chapters","Browse chapters by region."],
+      ["Community Programs","https://www.wai.org/community","Connect with members."]
+    ];
+  }
+
+  else {
+    results = [
+      ["Membership","https://www.wai.org/membership-information","Join or manage your membership."],
+      ["Scholarships","https://www.wai.org/scholarships","Explore funding opportunities."],
+      ["Conference","https://www.wai.org/conference","Learn about the annual event."]
+    ];
+  }
+
+  let html = `<div class="card"><strong>Top Results</strong><br><br>`;
+
+  results.slice(0,5).forEach(r=>{
+    html += `
+      <div class="result-item">
+        <a href="${r[1]}" target="_blank">${r[0]}</a>
+        <div class="small">${r[2]}</div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+// LOAD RESULTS
 function loadResults(q){
 
-  let content = "<p><strong>You asked:</strong> " + q + "</p>";
-  const query = q.toLowerCase();
+  let content = `<p><strong>You asked:</strong> ${q}</p>`;
 
-  // CHAPTERS
-  if(query.includes("chapter") || query.includes("find a chapter") || query.includes("near me")){
-    content += `
-      <div class="card">
-        <strong>Find a chapter</strong><br><br>
+  content += buildTopResults(q);
 
-        <div class="result-item">
-          <a href="https://www.wai.org/chapters">Browse all WAI Chapters</a>
-          <div class="small">Find local chapters and connect in your area.</div>
-        </div>
-
-      </div>
-    `;
-  }
-
-  // LOGIN
-  else if(query.includes("login") || query.includes("password")){
-    content += `
-      <div class="card">
-        <strong>Account access</strong><br><br>
-
-        <div class="result-item">
-          <a href="https://www.wai.org/member-compass">Member Compass</a>
-          <div class="small">Login or reset your password.</div>
-        </div>
-
-      </div>
-    `;
-  }
-
-  // MEMBERSHIP
-  else if(query.includes("member") || query.includes("join") || query.includes("renew")){
-    content += `
-      <div class="card">
-        <strong>Membership</strong><br><br>
-
-        <div class="result-item">
-          <a href="https://www.wai.org/membership-information">Membership Information</a>
-          <div class="small">Join, renew, or manage your membership.</div>
-        </div>
-
-        <div class="result-item">
-          <a href="https://www.wai.org/member-compass">Member Compass</a>
-          <div class="small">Access your account.</div>
-        </div>
-
-      </div>
-    `;
-  }
-
-  // SCHOLARSHIPS
-  else if(query.includes("scholar")){
-    content += `
-      <div class="card">
-        <strong>Scholarships</strong><br><br>
-
-        <div class="result-item">
-          <a href="https://www.wai.org/scholarships">WAI Scholarships</a>
-          <div class="small">Browse and apply for scholarships.</div>
-        </div>
-
-      </div>
-    `;
-  }
-
-  // EVENTS
-  else if(query.includes("conference") || query.includes("event")){
-    content += `
-      <div class="card">
-        <strong>Conference & Events</strong><br><br>
-
-        <div class="result-item">
-          <a href="https://www.wai.org/conference">Annual Conference</a>
-          <div class="small">Details on registration and sessions.</div>
-        </div>
-
-        <div class="result-item">
-          <a href="https://www.wai.org/events">All Events</a>
-          <div class="small">Explore upcoming WAI events.</div>
-        </div>
-
-      </div>
-    `;
-  }
-
-  // DEFAULT
-  else {
-    content += `
-      <div class="card">
-        <strong>Helpful links</strong><br><br>
-
-        <div class="result-item">
-          <a href="https://www.wai.org/membership-information">Membership</a>
-        </div>
-
-        <div class="result-item">
-          <a href="https://www.wai.org/scholarships">Scholarships</a>
-        </div>
-
-        <div class="result-item">
-          <a href="https://www.wai.org/conference">Conference</a>
-        </div>
-
-      </div>
-    `;
-  }
-
-  // GOOGLE BUTTON
   content += `
     <a class="btn" href="https://www.google.com/search?q=site:wai.org+${encodeURIComponent(q)}" target="_blank">
       See more results
